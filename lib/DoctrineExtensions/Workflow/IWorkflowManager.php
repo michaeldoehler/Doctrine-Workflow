@@ -61,7 +61,17 @@ interface IWorkflowManager
      * @throws ezcDbException
      */
     public function loadWorkflowById( $workflowId );
+    
+	/**
+     * @return WorkflowOptions
+     */
+    public function getWorkflowOptions();
 
+    /**
+     * @return WorkflowFactory
+     */
+    public function getWorkflowFactory();
+	
     /**
      * Save a workflow definition to the database.
      *

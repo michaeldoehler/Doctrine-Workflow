@@ -231,7 +231,39 @@ class DefinitionStorage implements \ezcWorkflowDefinitionStorage
 
         return $workflow;
     }
+	
+    /**
+     * What mode of saving should it be? Update or Re-Generate?
+     *
+     * Conditions that an update sufficies:
+     * 1. No node has been deleted
+     * 2. No node has changed its meaning (action class or type)
+     * 3. For simplicitly only zero or one new nodes will be created.
+     *
+     * @param  \ezcWorkflow $workflow
+     * @return bool
+     */
+    private function canBeUpdated($workflow)
+    {
+        $hasExistingNodeIds = array();
+        $newNodes = 0;
+        foreach ( $workflow->nodes as $node ) {
+            $oid = spl_object_hash($node);
+            if (!isset($this->nodeMap[$oid])) {
+                $newNodes++;
+            } else {
+                $hasExistingNodeIds[] = $this->nodeMap[$oid];
+            }
+        }
 
+        if ($newNodes < 2 && $workflow->id) {
+            $similarCount = count(array_intersect($hasExistingNodeIds, $this->workflowNodeIds[$workflow->id]));
+            $previousCount = max(count($hasExistingNodeIds), count($this->workflowNodeIds[$workflow->id]));
+            return ($similarCount == $previousCount);
+        }
+        return false;
+    }
+	
     /**
      * Save a workflow definition to the database.
      *
@@ -249,28 +281,7 @@ class DefinitionStorage implements \ezcWorkflowDefinitionStorage
 
         $platform = $this->conn->getDatabasePlatform();
 
-        // what mode of saving should it be? Update or Re-Generate?
-        //
-        // Conditions that an update sufficies:
-        // 1. No node has been deleted
-        // 2. No node has changed its meaning (action class or type)
-        // 3. For simplicitly only zero or one new nodes will be created.
-
-        $hasExistingNodeIds = array();
-        $newNodes = 0;
-        foreach ( $workflow->nodes as $node ) {
-            $oid = spl_object_hash($node);
-            if (!isset($this->nodeMap[$oid])) {
-                $newNodes++;
-            } else {
-                $hasExistingNodeIds[] = $this->nodeMap[$oid];
-            }
-        }
-
-        $canBeUpdate = false;
-        if ($newNodes < 2 && count(array_diff($hasExistingNodeIds, $this->workflowNodeIds[$workflow->id])) == 0 && $workflow->id) {
-            $canBeUpdate = true;
-        }
+        $canBeUpdate = $this->canBeUpdated($workflow);
 
         $this->workflowNodeIds[$workflow->id] = array();
 
