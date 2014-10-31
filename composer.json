@@ -1,0 +1,10 @@
+{
+	"name": "beberlei/DoctrineWorkflow",
+	"require": {
+		"doctrine/orm": "*",
+		"zetacomponents/workflow": "*"
+	},
+	"autoload": {
+		"psr-0": {"DoctrineExtensions": "lib/"}
+	}
+}
