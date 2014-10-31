@@ -2,7 +2,8 @@
 	"name": "michaeldoehler/doctrine-workflow",
 	"require": {
 		"doctrine/orm": "*",
-		"zetacomponents/workflow": "*"
+		"zetacomponents/workflow": "*",
+		"zetacomponents/workflow-database-tiein": "*"
 	},
 	"autoload": {
 		"psr-0": {"DoctrineExtensions": "lib/"}
