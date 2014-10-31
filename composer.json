@@ -1,5 +1,5 @@
 {
-	"name": "beberlei/DoctrineWorkflow",
+	"name": "michaeldoehler/DoctrineWorkflow",
 	"require": {
 		"doctrine/orm": "*",
 		"zetacomponents/workflow": "*"

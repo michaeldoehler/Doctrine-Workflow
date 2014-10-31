@@ -32,7 +32,7 @@ class WorkflowFactory
 
     public function __construct($entityManager = null)
     {
-        $this->em = $entityManager;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -53,7 +53,7 @@ class WorkflowFactory
     {
         if ($className == "DoctrineExtensions\Workflow\VariableHandler\EntityManagerHandler") {
             if (!($this->entityManager instanceof \Doctrine\ORM\EntityManager)) {
-                throw new \ezcWorkflowException("EntityManagerHandler requires an EntityManager to be passed to the WorkflowFactory.");
+                throw new WorkflowException("EntityManagerHandler requires an EntityManager to be passed to the WorkflowFactory.");
             }
 
             return new $className($this->entityManager);
